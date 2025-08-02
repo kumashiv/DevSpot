@@ -1,4 +1,5 @@
 using DevSpot.Data;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace DevSpot
@@ -14,6 +15,13 @@ namespace DevSpot
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("Database"));
             });
+
+            builder.Services.AddDefaultIdentity<IdentityUser>(options =>
+            {
+                options.SignIn.RequireConfirmedAccount = false;
+            })
+                .AddRoles<IdentityRole>()
+                .AddEntityFrameworkStores<ApplicationDbContext>();
 
 
             // Add services to the container.
@@ -33,6 +41,8 @@ namespace DevSpot
             app.UseRouting();
 
             app.UseAuthorization();
+
+            app.MapRazorPages();
 
             app.MapStaticAssets();
             app.MapControllerRoute(
