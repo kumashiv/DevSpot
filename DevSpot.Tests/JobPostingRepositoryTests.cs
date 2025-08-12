@@ -4,11 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DevSpot.Data;
+using DevSpot.Models;
+using DevSpot.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace DevSpot.Tests
 {
-    internal class JobPostingRepositoryTests
+    public class JobPostingRepositoryTests
     {
         private readonly DbContextOptions<ApplicationDbContext> _options;
 
@@ -26,6 +28,36 @@ namespace DevSpot.Tests
             return new ApplicationDbContext(_options);
         }
 
+        [Fact]
+        public async Task AddAsync_ShouldAddJobPosting()
+        {
+            // db context
+            var db = CreateDbContext();
+
+            // job posting repository
+            var repository = new JobPostingRepository(db);
+
+            // job posting
+            var jobPosting = new JobPosting
+            {
+                Title = "Test Title",
+                Description = "Test Description",
+                PostedDate = DateTime.Now,
+                Company = "Test Company",
+                Location = "Test Location",
+                UserId = "TestUserId"
+            };
+
+            // execute
+            await repository.AddAsync(jobPosting);
+
+            // result
+            var result = db.JobPostings.SingleOrDefault(x => x.Title == "Test Title");
+
+            // assert
+            Assert.NotNull(result);
+            Assert.Equal("Test Title", result.Title);
+        }
 
     }
 }
