@@ -34,7 +34,7 @@ namespace DevSpot.Tests
             // db context
             var db = CreateDbContext();
 
-            // job posting repository
+            // job posting repository   //using repository to save data
             var repository = new JobPostingRepository(db);
 
             // job posting
@@ -59,5 +59,44 @@ namespace DevSpot.Tests
             Assert.Equal("Test Title", result.Title);
         }
 
+
+        [Fact]
+        public async Task GetByIdAsync_ShouldReturnJobPosting()
+        {
+            var db = CreateDbContext();
+
+            var repository = new JobPostingRepository(db);
+
+            var jobPosting = new JobPosting
+            {
+                Title = "Test Title",
+                Description = "Test Description",
+                PostedDate = DateTime.Now,
+                Company = "Test Company",
+                Location = "Test Location",
+                UserId = "TestUserId"
+            };
+
+            // Saving data to db context
+            await db.JobPostings.AddAsync(jobPosting);
+            await db.SaveChangesAsync();
+
+            // Getting data from repository
+            var result = await repository.GetByIdAsync(jobPosting.Id);
+
+            Assert.NotNull(result);
+            Assert.Equal("Test Title", result.Title);
+        }
+
+        [Fact]
+        public async Task GetByIdAsync_ShouldThrowKeyNotFoundException()
+        {
+            var db = CreateDbContext();
+            var repository = new JobPostingRepository(db);
+
+            await Assert.ThrowsAsync<KeyNotFoundException>(
+                () => repository.GetByIdAsync(999)
+            );
+        }
     }
 }
