@@ -34,6 +34,11 @@ namespace DevSpot.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(JobPosting jobPosting)
         {
+            if (ModelState.IsValid)
+            {
+                await _repository.AddAsync(jobPosting);
+            }
+
             return RedirectToAction(nameof(Index));    // or simply ("Index")
         }
 
