@@ -1,4 +1,5 @@
-﻿using DevSpot.Models;
+﻿using DevSpot.Constants;
+using DevSpot.Models;
 using DevSpot.Repositories;
 using DevSpot.ViewModels;
 using Microsoft.AspNetCore.Authorization;
@@ -57,6 +58,31 @@ namespace DevSpot.Controllers
 
             // If not valid, redirect to same Create page with filled information
             return View(jobPostingVm);
+        }
+
+
+        // JobPosting/Delete/5
+        [HttpDelete]
+        [Authorize(Roles = "Admin,Employer")]
+        public async Task<IActionResult> Delete (int id)
+        {
+            var jobPosting = await _repository.GetByIdAsync(id);
+
+            if (jobPosting == null)
+            {
+                return NotFound();
+            }
+
+            var userId = _userManager?.GetUserId(User);
+
+            if (User.IsInRole(Roles.Admin) == false && jobPosting.UserId != userId)     // if you're not admin, you're an employer
+            {
+                return Forbid();
+            }
+
+            await _repository.DeleteAsync(id);
+
+            return Ok();
         }
 
     }
