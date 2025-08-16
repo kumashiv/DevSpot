@@ -47,9 +47,12 @@ namespace DevSpot.Controllers
                 };
 
                 await _repository.AddAsync(jobPosting);
+
+                return RedirectToAction(nameof(Index));     // or simply ("Index")
             }
 
-            return RedirectToAction(nameof(Index));    // or simply ("Index")
+            // If not valid, redirect to same Create page with filled information
+            return View(jobPostingVm);
         }
 
     }
