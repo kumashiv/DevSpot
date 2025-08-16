@@ -27,6 +27,31 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="JobPostings" asp-action="Create">Create</a>
                         </li>
                     </ul>
+
+
+                    <ul class="navbar-nav ms-auto">
+                        <!-- pushed to right -->
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <li>
+                                <a class="nav-link" asp-area="Identity" asp-page="/Account/Logout">Logout</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li>
+                                <a class="nav-link" asp-area="Identity" asp-page="/Account/Login">Login</a>
+                            </li>
+                            <li>
+                                <a class="nav-link" asp-area="Identity" asp-page="/Account/Register">Register</a>
+                            </li>
+                            
+                            
+
+                        }
+
+                    
+                    </ul>
                 </div>
             </div>
         </nav>
